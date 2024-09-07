@@ -7,9 +7,10 @@ body{
   background-repeat: no-repeat;
   background-size: cover;
 }
-.container {
+.container,p, h3{
   display: flex;
   justify-content: center;
+
 }
 .btn{
   border: none;
