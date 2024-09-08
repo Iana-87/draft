@@ -10,12 +10,18 @@ import LoaderPage from './Loader/LoaderPage';
 function App() {
   const [mySearch, setMySearch] = useState("");
   const [myNutrition, setMyNutrition] = useState([]);
-  const[ stateLoader, setStateLoader] = useState(true);
+  const[ stateLoader, setStateLoader] = useState(false);
   
+
+
+  useEffect(() => {
+    const timer = setTimeout(() => setStateLoader(false), 5000);
+    return () => clearTimeout(timer)
+  }, [])
 
   const getAnalysis = async () => {
     try {
-      setStateLoader(true); 
+      setStateLoader(true);
       const response = await fetch(
         `https://api.edamam.com/api/nutrition-data?app_id=ee774096&app_key=3060c83b97b24940cfe80d7b67653174&nutrition-type=cooking&ingr=${mySearch}`,
         {
@@ -29,33 +35,17 @@ function App() {
       if (response.ok) {
         const data = await response.json();
         setMyNutrition([data]);
-        setStateLoader(false); 
         console.log( data);
+        setStateLoader(true);
       } else {
         console.error("Error fetching data:", response.status);
-      
+        setStateLoader(true);
       }
     } catch (error) {
       console.error("Fetch error:", error);
-      setStateLoader(false); 
-      
-    }
-  };
-
-
-  const handleFormSubmit = (e) => {
-    e.preventDefault(); 
-    if (mySearch.trim() !== "") {
-      getAnalysis (); 
-    }
-   
-  
-  };
-
-  const myNutritionAnalis = (e) => {
-    setMySearch(e.target.value);
-  
-  };
+      setStateLoader(true);
+      }
+   };
 
   const handleAlert = () => {
     Swal.fire(
@@ -63,14 +53,25 @@ function App() {
       
     )
   }
-    
 
- 
 
-  useEffect(() => {
-    const timer = setTimeout(() => setStateLoader(false), 5000);
-    return () => clearTimeout(timer)
-  }, [])
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault(); 
+   if (mySearch.trim() !== "") {
+      getAnalysis (); 
+    }
+   else if (handleAlert());
+  
+  };
+
+  const myNutritionAnalis = (e) => {
+    setMySearch(e.target.value);
+  
+
+  };
+
+  
 
 
 
@@ -95,10 +96,11 @@ function App() {
       {stateLoader && <LoaderPage />} 
 
       {myNutrition.length > 0 && myNutrition.map((element, index) => (
-        <MyNutritionComponent key={index} label={/*element.ingredients ? */element.ingredients[0].text && handleAlert()}
+        <MyNutritionComponent
+        key={index} 
+        label={element.ingredients ? element.ingredients[0].text : 'No data' }
         calories={element.calories} 
         waight={element.totalWeight}
-        calcium={element.totalNutrients.CA.quantity}
         carbohydrate={element.totalNutrients.CHOCDF.quantity} 
         cholesterol = {element.totalNutrients.CHOLE.quantity}
         energy = {element.totalNutrients.ENERC_KCAL.quantity}

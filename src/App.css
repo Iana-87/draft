@@ -27,3 +27,13 @@ body{
 
   }
   
+  @media (max-width: 600px) {
+    .nutrition-container {
+      padding: 10px;
+      max-width: 90%;
+    }
+    
+    .nutrition-container p {
+      font-size: 14px;
+    }
+  }
