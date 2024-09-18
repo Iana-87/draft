@@ -1,6 +1,6 @@
 
 
-import { useEffect, useState } from 'react';
+import {  useState} from 'react';
 import './App.css';
 import MyNutritionComponent from './MyNutritionComponent';
 import Swal from 'sweetalert2';
@@ -14,10 +14,10 @@ function App() {
   
 
 
-  useEffect(() => {
-    const timer = setTimeout(() => setStateLoader(false), 5000);
+  /*useEffect(() => {
+    const timer = setTimeout(() => setStateLoader(false), 10000);
     return () => clearTimeout(timer)
-  }, [])
+  }, [])*/
 
   const getAnalysis = async () => {
     try {
@@ -35,33 +35,30 @@ function App() {
       if (response.ok) {
         const data = await response.json();
         setMyNutrition([data]);
-        console.log( data);
-        setStateLoader(true);
+        setStateLoader(false);
       } else {
         console.error("Error fetching data:", response.status);
-        setStateLoader(true);
+        setStateLoader(false);
       }
     } catch (error) {
       console.error("Fetch error:", error);
-      setStateLoader(true);
+      setStateLoader(false);
       }
    };
 
   const handleAlert = () => {
     Swal.fire(
-     "Please, indicate the quantity of products",
-      
-    )
-  }
+     "Please, indicate the quantity of products");
+  };
 
-
-
-  const handleFormSubmit = (e) => {
+const handleFormSubmit = (e) => {
     e.preventDefault(); 
    if (mySearch.trim() !== "") {
       getAnalysis (); 
     }
-   else if (handleAlert());
+   else {
+    handleAlert()
+  }
   
   };
 
